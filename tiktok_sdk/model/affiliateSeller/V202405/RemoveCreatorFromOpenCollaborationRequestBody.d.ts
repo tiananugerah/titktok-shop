@@ -1,0 +1,16 @@
+export declare class AffiliateSeller202405RemoveCreatorFromOpenCollaborationRequestBody {
+    'creatorUserId'?: string;
+    'productId'?: string;
+    static discriminator: string | undefined;
+    static attributeTypeMap: Array<{
+        name: string;
+        baseName: string;
+        type: string;
+    }>;
+    static getAttributeTypeMap(): {
+        name: string;
+        baseName: string;
+        type: string;
+    }[];
+}
+//# sourceMappingURL=RemoveCreatorFromOpenCollaborationRequestBody.d.ts.map

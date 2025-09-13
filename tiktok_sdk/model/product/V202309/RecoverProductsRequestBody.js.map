@@ -1,0 +1,1 @@
+{"version":3,"file":"RecoverProductsRequestBody.js","sourceRoot":"","sources":["RecoverProductsRequestBody.ts"],"names":[],"mappings":";;;AAcA,MAAa,uCAAuC;IAehD,MAAM,CAAC,mBAAmB;QACtB,OAAO,uCAAuC,CAAC,gBAAgB,CAAC;IACpE,CAAC;;AAjBL,0FAkBC;AAZU,qDAAa,GAAuB,SAAS,CAAC;AAE9C,wDAAgB,GAA0D;IAC7E;QACI,MAAM,EAAE,YAAY;QACpB,UAAU,EAAE,aAAa;QACzB,MAAM,EAAE,eAAe;KAC1B;CAAK,CAAC"}

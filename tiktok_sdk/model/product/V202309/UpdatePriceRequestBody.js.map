@@ -1,0 +1,1 @@
+{"version":3,"file":"UpdatePriceRequestBody.js","sourceRoot":"","sources":["UpdatePriceRequestBody.ts"],"names":[],"mappings":";;;AAeA,MAAa,mCAAmC;IAe5C,MAAM,CAAC,mBAAmB;QACtB,OAAO,mCAAmC,CAAC,gBAAgB,CAAC;IAChE,CAAC;;AAjBL,kFAkBC;AAZU,iDAAa,GAAuB,SAAS,CAAC;AAE9C,oDAAgB,GAA0D;IAC7E;QACI,MAAM,EAAE,MAAM;QACd,UAAU,EAAE,MAAM;QAClB,MAAM,EAAE,gDAAgD;KAC3D;CAAK,CAAC"}

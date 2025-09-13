@@ -1,0 +1,1 @@
+{"version":3,"file":"GetActiveShopsResponseData.js","sourceRoot":"","sources":["GetActiveShopsResponseData.ts"],"names":[],"mappings":";;;AAeA,MAAa,sCAAsC;IAe/C,MAAM,CAAC,mBAAmB;QACtB,OAAO,sCAAsC,CAAC,gBAAgB,CAAC;IACnE,CAAC;;AAjBL,wFAkBC;AAZU,oDAAa,GAAuB,SAAS,CAAC;AAE9C,uDAAgB,GAA0D;IAC7E;QACI,MAAM,EAAE,OAAO;QACf,UAAU,EAAE,OAAO;QACnB,MAAM,EAAE,oDAAoD;KAC/D;CAAK,CAAC"}

@@ -1,0 +1,15 @@
+export declare class Product202309CreateProductRequestBodySkusSalesAttributesSupplementarySkuImages {
+    'uri'?: string;
+    static discriminator: string | undefined;
+    static attributeTypeMap: Array<{
+        name: string;
+        baseName: string;
+        type: string;
+    }>;
+    static getAttributeTypeMap(): {
+        name: string;
+        baseName: string;
+        type: string;
+    }[];
+}
+//# sourceMappingURL=CreateProductRequestBodySkusSalesAttributesSupplementarySkuImages.d.ts.map
