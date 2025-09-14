@@ -12,6 +12,10 @@ const configSchema = z.object({
   TIKTOK_BASE_PATH: z.string().url().default('https://open-api.tiktokglobalshop.com'),
   TIKTOK_SANDBOX: z.string().transform(val => val === 'true').default('false'),
 
+  // Redis Configuration
+  REDIS_HOST: z.string().default('127.0.0.1'),
+  REDIS_PORT: z.string().transform(Number).default('6379'),
+
   // Server Configuration
   PORT: z.string().transform(Number).default('3000'),
   HOST: z.string().default('0.0.0.0'),
