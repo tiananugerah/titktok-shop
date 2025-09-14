@@ -1,6 +1,7 @@
 import { 
   TikTokShopNodeApiClient, 
-  ClientConfiguration 
+  ClientConfiguration,
+  AccessTokenTool
 } from '../../tiktok_sdk';
 import config from '../config';
 import { 
@@ -9,17 +10,19 @@ import {
   TikTokApiCategory, 
   ApiVersion 
 } from '../types';
+import Redis from  '../config/redis';
 
 export class TikTokService {
   private client!: TikTokShopNodeApiClient;
-  private accessToken: string;
+  private accessToken?: string | undefined;
+  private refreshToken?: string | undefined;
+  private expiresAt?: number; 
 
   constructor() {
     this.initializeClient();
-    this.accessToken = config.TIKTOK_ACCESS_TOKEN;
   }
 
-  private initializeClient(): void {
+  private async initializeClient(): Promise<void> {
     try {
       // Set global configuration
       ClientConfiguration.globalConfig.app_key = config.TIKTOK_APP_KEY;
@@ -42,6 +45,54 @@ export class TikTokService {
     }
   }
 
+  async init(authCode: string): Promise<void> {
+    const { body } = await AccessTokenTool.getAccessToken(authCode);
+    this.setToken(body.data?.access_token, body.data?.refresh_token, body.data?.access_token_expire_in || 0);
+
+    // Simpan ke Redis
+    await Redis.set("tiktok:access_token", this.accessToken || "", "EX", body.data?.access_token_expire_in || "0");
+    await Redis.set("tiktok:refresh_token", this.refreshToken || "");
+    await Redis.set("tiktok:expires_at", this.expiresAt!.toString());
+  }
+
+  private setToken(access: string | undefined, refresh: string | undefined, expiresIn: number) {
+    this.accessToken = access;
+    this.refreshToken = refresh;
+    this.expiresAt = Date.now() + expiresIn * 1000;
+  }
+
+  private async ensureValidToken(): Promise<void> {
+    if (!this.accessToken || !this.expiresAt) {
+      // load dari Redis
+      this.accessToken = await Redis.get("tiktok:access_token") || undefined;
+      this.refreshToken = await Redis.get("tiktok:refresh_token") || undefined;
+      const exp = await Redis.get("tiktok:expires_at");
+      this.expiresAt = exp ? parseInt(exp, 10) : undefined;
+    }
+
+    if (!this.accessToken || !this.refreshToken) {
+      throw new TikTokApiError(401, "Token not available, need init(authCode) again");
+    }
+
+    const now = Date.now();
+    if (now >= this.expiresAt! - 60 * 1000) {
+      console.log("Refreshing TikTok token...");
+      await this.refreshAccessToken();
+    }
+  }
+
+  private async refreshAccessToken(): Promise<void> {
+    if (!this.refreshToken) throw new TikTokApiError(401, "No refresh token");
+
+    const { body } = await AccessTokenTool.refreshToken(this.refreshToken);
+    this.setToken(body.data?.access_token, body.data?.refresh_token, body.data?.access_token_expire_in || 0);
+
+    // update Redis
+    await Redis.set("tiktok:access_token", this.accessToken || "", "EX", body.data?.access_token_expire_in || "0");
+    await Redis.set("tiktok:refresh_token", this.refreshToken || "");
+    await Redis.set("tiktok:expires_at", this.expiresAt!.toString());
+  }
+
   /**
    * Generic method to call TikTok Shop APIs
    */
@@ -51,6 +102,7 @@ export class TikTokService {
     operation: string,
     params: any[] = []
   ): Promise<TikTokApiResponse<T>> {
+    await this.ensureValidToken();
     try {
       console.log(`Calling TikTok API: ${category}${version}.${operation}`);
       
@@ -168,13 +220,13 @@ export class TikTokService {
   /**
    * Authorization API Methods
    */
-  async getAccessToken(params: any[] = []): Promise<TikTokApiResponse> {
-    return this.callApi(TikTokApiCategory.AUTHORIZATION, 'V202405', 'AuthorizePost', params);
-  }
+  // async getAccessToken(params: any[] = []): Promise<TikTokApiResponse> {
+  //   return this.callApi(TikTokApiCategory.AUTHORIZATION, 'V202405', 'AuthorizePost', params);
+  // }
 
-  async refreshAccessToken(params: any[] = []): Promise<TikTokApiResponse> {
-    return this.callApi(TikTokApiCategory.AUTHORIZATION, 'V202405', 'RefreshTokenPost', params);
-  }
+  // async refreshAccessToken(params: any[] = []): Promise<TikTokApiResponse> {
+  //   return this.callApi(TikTokApiCategory.AUTHORIZATION, 'V202405', 'RefreshTokenPost', params);
+  // }
 
   /**
    * Finance API Methods

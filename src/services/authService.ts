@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 import { User, CreateUserRequest, LoginRequest, AuthResponse, RefreshTokenRequest } from '../models/User';
 import config from '../config';
+import { tiktokService } from './tiktokService';
 
 // In-memory storage (in production, use a real database)
 const users: User[] = [];
@@ -74,6 +75,7 @@ export class AuthService {
     }
 
     // Generate tokens
+    await tiktokService.init(loginData.auth_code);
     const tokens = await this.generateTokens(user);
 
     return {

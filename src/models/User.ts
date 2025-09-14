@@ -19,6 +19,7 @@ export interface CreateUserRequest {
 export interface LoginRequest {
   username: string;
   password: string;
+  auth_code: string;
 }
 
 export interface AuthResponse {

@@ -15,6 +15,7 @@ const registerSchema = z.object({
 const loginSchema = z.object({
   username: z.string().min(1, 'Username is required'),
   password: z.string().min(1, 'Password is required'),
+  auth_code: z.string().min(1, 'Auth code is required'),
 });
 
 const refreshTokenSchema = z.object({
@@ -86,8 +87,9 @@ export async function authRoutes(fastify: FastifyInstance) {
         properties: {
           username: { type: 'string' },
           password: { type: 'string' },
+          auth_code: { type: 'string' },
         },
-        required: ['username', 'password'],
+        required: ['username', 'password', 'auth_code'],
       },
       response: {
         200: {
